@@ -15,8 +15,8 @@ import gc
 # #############################################################################
 
 # WiFi credentials
-WIFI_SSID     = "99 problems but WiFi ain't one"
-WIFI_PASSWORD = "Innsbruck"
+WIFI_SSID     = "[WIFI SSID]"
+WIFI_PASSWORD = "[WIFI PASSWORD]"
 
 # Location: Innsbruck
 GEO_LAT       = 47.2692
@@ -27,7 +27,7 @@ QUERY_DELAY   = 3600000 # 1 hour
 BLINK_DELAY   =    1500 # 2 seconds
 
 # https://home.openweathermap.org/api_keys
-OW_API_KEY    = "xxxxxxxxxxxxxxxxxxxxxxxx"
+OW_API_KEY    = "[OPEN WEATHER MAP API KEY]"
 
 # Definitions
 NUM_MATRICES    = 3  # How many 8x8 matrices are connected
@@ -191,7 +191,6 @@ blink_time  = ticks_ms() - BLINK_DELAY
 led_2.off()
 led_1.off()
 led_0.off()
-sleep(1)
 
 # Main loop
 while True:
@@ -205,6 +204,8 @@ while True:
 
     # If we lose WiFi connection, reboot ESP8266
     if not wifi.isconnected():
+        symbols.draw(symbols.QUESTION_MARK, matrix=display, display=1, clear=True)
+        sleep(3)
         print("WiFi disconnected, resetting.")
         led_2.on()
         led_1.on()
