@@ -142,7 +142,8 @@ def draw(symbol, matrix, display=0, clear=False):
 
     for row in range(0,8):
         for col in range(0,8):
-            matrix.pixel(col+(display*8), 7-row, symbol[row][col])
+            # The displays are rotated 180°, so it's `7 - [actual row/col]`
+            matrix.pixel(7-col+(display*8), 7-row, symbol[row][col])
 
     # If clear is set to True, display the matrix
     if clear:
