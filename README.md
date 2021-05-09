@@ -83,6 +83,6 @@ $ ampy --port /dev/tty.usbserial-1430 --baud 115200 put main.py
 
 ## Weather Icons
 
-The weather icons were custom designed using this excellent [LED Matrix Editor](https://xantorohara.github.io/led-matrix-editor/#185a66bddb663c00|894218bc3d184291|001ea1a919a6c0ec|00007e818999710e|152a547e8191710e|0a04087e8191710e|55aa55aa55aa55aa|a542a51818a542a5|180018183c3c1800|1800183860663c00).
+The weather icons were custom designed using this excellent [LED Matrix Editor](https://git.io/J3N9M).
 
-![Weather Icons](resources/weather-icons.png "Custom Weather Icons")
+![Weather Icons](resources/weather-icons.png "Custom Weather Icons: #185a66bddb663c00|894218bc3d184291|001ea1a919a6c0ec|00007e818999710e|152a547e8191710e|0a04087e8191710e|55aa55aa55aa55aa|a542a51818a542a5|180018183c3c1800|1800183860663c00")
