@@ -30,10 +30,12 @@ well as the power jack and a trimpot to adjust the LED brightness.
 
 I had 10 boards (1.6mm FR4 ENIG, RoHS, black solder mask) manufactured by [JLPCB](https://jlcpcb.com) for
 US$ 44.00 including shipping in April 2021. The black solder mask makes it easy to prevent reflections inside
-the case.
+the case (and it looks gorgeous).
 
 The [Fritzing file](hardware/NodeMCUWeatherStation.fzz) as well as the exported
 [Gerber files](hardware/NodeMCUWeatherStation_Gerber.zip) can be found in the [hardware](hardware) folder.
+
+![Finished PCB](resources/jlcpcb_boards.jpg "JLCPCB Finished PCB")
 
 ![Breadboard View](resources/NodeMCUWeatherStation_bb.png "Breadboard View")
 
