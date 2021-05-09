@@ -1,21 +1,23 @@
 
 # 🌤 NodeMCU Weather Station
 
-## Hardware
+## Hardware BOM
 
 The following components are required (all through hole):
 
-- 1 × ESP8266 NodeMCU development board
-- 3 × MAX7219 8×8 LED matrix (SPI)
-- 1 × 5.5mm power jack
-- 1 × 3mm linear trimpot
-- 1 × 3mm LED green
-- 1 × 3mm LED red
-- 1 × Resistor 4.7kΩ
-- 2 × Resistors 100Ω
+| Qty. | Item                       | Value          | Label      | Footprint | Price    |
+|----------|------------------------|----------------|------------|-----------|----------|
+| 1    | ESP8266 NodeMCU board      | -              |            | -         | US$ 2.05 |
+| 3    | MAX7219 8×8 SPI LED matrix | -              |            | -         | US$ 3.14 |
+| 1    | DC Female Power Socket     | 5.5 × 2.1mm    | `J1`       | PTH       | US$ 0.07 |
+| 1    | Trimmer potentiometer      | 3mm, 1kΩ       | `R1`       | DIP-3 PTH | US$ 0.04 |
+| 1    | LED                        | green, 3mm     | `LED1`     | THT       | US$ 0.02 |
+| 1    | LED                        | yellow, 3mm    | `LED2`     | THT       | US$ 0.02 |
+| 1    | Resistor (axial)           | 4.7kΩ, ¼W, ±5% | `R2`       | THT       | US$ 0.01 |
+| 2    | Resistor (axial)           | 100Ω, ¼W, ±5%  | `R3`, `R4` | THT       | US$ 0.01 |
 
-I used the [RobotDyn yellow/amber colored modules](https://www.aliexpress.com/item/32732745628.html). A lot
-of other modules will also work, but they need to be 5-pin SPI chainable modules.
+I used [RobotDyn yellow/amber colored modules](https://www.aliexpress.com/item/32732745628.html). A lot
+of other modules will also work, but they need to be 5-pin SPI chainable modules. Be aware of the pinout!
 
 For the ESP8266 board, I used a [KeyeStudio NodeMCU](https://www.aliexpress.com/item/32668574859.html) but any
 other NodeMCU V2 or V3 board also works.
