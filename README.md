@@ -62,14 +62,14 @@ $ pip3 install --user adafruit-ampy
 ## Install MicroPython
 
 Download the latest [MicroPython firmware for ESP8266](https://micropython.org/download/esp8266/). I used
-[`esp8266-20210202-v1.14.bin`](firmware/esp8266-20210202-v1.14.bin) and flash it to the NodeMCU.
+[`esp8266-20220117-v1.18.bin`](firmware/esp8266-20220117-v1.18.bin) and flash it to the NodeMCU.
 
 _Note:_ The USB serial device (`/dev/tty.usbserial-1430`) will be different, depending on your operating
 system, USB controller and port you use.
 
 ```bash
 $ esptool.py --port /dev/tty.usbserial-1430 erase_flash
-$ esptool.py --port /dev/tty.usbserial-1430 --baud 460800 write_flash --flash_size=detect -fm dio 0x00 esp8266-20210202-v1.14.bin
+$ esptool.py --port /dev/tty.usbserial-1430 --baud 460800 write_flash --flash_size=detect -fm dio 0x00 firmware/esp8266-20220117-v1.18.bin
 ```
 
 ## Upload Software
@@ -77,10 +77,11 @@ $ esptool.py --port /dev/tty.usbserial-1430 --baud 460800 write_flash --flash_si
 Use [Adafruit's `ampy` tool](https://github.com/adafruit/ampy) to upload the software to the NodeMCU.
 
 ```bash
-$ ampy --port /dev/tty.usbserial-1430 --baud 115200 put boot.py
-$ ampy --port /dev/tty.usbserial-1430 --baud 115200 put symbols.py
-$ ampy --port /dev/tty.usbserial-1430 --baud 115200 put max7219.py
-$ ampy --port /dev/tty.usbserial-1430 --baud 115200 put main.py
+$ ampy --port /dev/tty.usbserial-1430 --baud 115200 put src/boot.py
+$ ampy --port /dev/tty.usbserial-1430 --baud 115200 put src/secrets.py
+$ ampy --port /dev/tty.usbserial-1430 --baud 115200 put src/symbols.py
+$ ampy --port /dev/tty.usbserial-1430 --baud 115200 put src/max7219.py
+$ ampy --port /dev/tty.usbserial-1430 --baud 115200 put src/main.py
 ```
 
 ## Weather Icons

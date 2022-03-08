@@ -19,8 +19,12 @@ WIFI_SSID     = "[WIFI SSID]"
 WIFI_PASSWORD = "[WIFI PASSWORD]"
 
 # Location: Innsbruck
-GEO_LAT       = 47.2692
-GEO_LON       = 11.4041
+# GEO_LAT       = 47.2692
+# GEO_LON       = 11.4041
+
+# Location: Vienna
+GEO_LAT       = 48.1997
+GEO_LON       = 16.3948
 
 # How often to check for weather updates (milliseconds)
 QUERY_DELAY   = 3600000 # 1 hour
@@ -135,7 +139,7 @@ conditions_map = {
     'Ash':          'EXCLAMATION_MARK',
     'Squall':       'EXCLAMATION_MARK',
     'Tornado':      'EXCLAMATION_MARK',
-    'Clear':        'EXCLAMATION_MARK',
+    'Clear':        'CONDITIONS_SUNNY',
     'Clouds':       'CONDITIONS_CLOUDY'
 }
 
