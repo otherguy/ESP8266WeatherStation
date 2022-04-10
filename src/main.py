@@ -200,21 +200,22 @@ print('Now: {}'.format(localtime()))
 while True:
 
     # If power jack is removed, lower brightness
-    if not insertion:
+    if insertion.value() == 0:
         display.brightness(0)
     else:
-        current_hour = localtime()[3]
-        if(current_hour <= secrets.DISPLAY_OFF_START and current_hour >= secrets.DISPLAY_OFF_END):
-            # If the display was off, turn it on and reset update_time to trigger a refresh
-            if display.is_off():
-                display.on()
-                update_time = ticks_ms() + QUERY_DELAY
-        else:
-            # If we're in night mode, turn off the display
-            display.off()
+        # Read brightness from trim pot at A0 and set on display
+        brightness = set_matrix_brightness(pot, display, brightness)
 
-            # Read brightness from trim pot at A0 and set on display
-            brightness = set_matrix_brightness(pot, display, brightness)
+    # Turn off the display at night (if configured)
+    current_hour = localtime()[3]
+    if(current_hour <= secrets.DISPLAY_OFF_START and current_hour >= secrets.DISPLAY_OFF_END):
+        # If the display was off, turn it on and reset update_time to trigger a refresh
+        if display.is_off():
+            display.on()
+            update_time = ticks_ms() + QUERY_DELAY
+    else:
+        # If we're in night mode, turn off the display
+        display.off()
 
     # If we lose WiFi connection, reboot ESP8266
     if not wifi.isconnected():
