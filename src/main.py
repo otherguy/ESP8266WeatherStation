@@ -3,9 +3,11 @@
 # main.py
 #
 from machine import Pin, Signal, SPI, reset, ADC
-from utime import sleep, ticks_ms
+from utime import sleep, ticks_ms, localtime
 from max7219 import Matrix8x8
 from network import WLAN, STA_IF
+from ntptime import settime
+import secrets
 import symbols
 import urequests as requests
 import gc
@@ -13,25 +15,13 @@ import gc
 # #############################################################################
 # ### Configuration
 # #############################################################################
-
-# WiFi credentials
-WIFI_SSID     = "[WIFI SSID]"
-WIFI_PASSWORD = "[WIFI PASSWORD]"
-
-# Location: Innsbruck
-# GEO_LAT       = 47.2692
-# GEO_LON       = 11.4041
-
-# Location: Vienna
-GEO_LAT       = 48.1997
-GEO_LON       = 16.3948
+#
+# This is fairly static and does not need to be changed when deploying.
+#
 
 # How often to check for weather updates (milliseconds)
 QUERY_DELAY   = 3600000 # 1 hour
-BLINK_DELAY   =    1500 # 2 seconds
-
-# https://home.openweathermap.org/api_keys
-OW_API_KEY    = "[OPEN WEATHER MAP API KEY]"
+BLINK_DELAY   =    3000 # 3 seconds
 
 # Definitions
 NUM_MATRICES    = 3  # How many 8x8 matrices are connected
@@ -175,9 +165,9 @@ gc.enable()
 
 # Connect to WiFi
 if not wifi.isconnected():
-    print("Connecting to WiFI '" + WIFI_SSID + '"')
+    print("Connecting to WiFI '" + secrets.WIFI_SSID + '"')
     wifi.active(True)
-    wifi.connect(WIFI_SSID, WIFI_PASSWORD)
+    wifi.connect(secrets.WIFI_SSID, secrets.WIFI_PASSWORD)
     while not wifi.isconnected():
         pass
 
@@ -190,25 +180,39 @@ print("Free memory: " + str(gc.mem_free()) + " bytes.")
 update_time = ticks_ms() - QUERY_DELAY
 blink_time  = ticks_ms() - BLINK_DELAY
 
-# #############################################################################
-
+# Turn off all LEDs
 led_2.off()
 led_1.off()
 led_0.off()
 
+# Set time from NTP server
+print('Setting time from NTP...')
+try:
+    settime()
+except OSError as error:
+    print('Failed to set time from NTP: ' + str(error))
+    pass
+print('Now: {}'.format(localtime()))
+
+# #############################################################################
+
 # Main loop
 while True:
-    # If power jack is removed, se
+    # If power jack is removed, lower brightness
     if not insertion:
-        print("Power jack disconnected!")
-        display.brightness(0)
+        display.brightness(1)
     else:
-        # Read brightness from trim pot at A0 and set on display
-        brightness = set_matrix_brightness(pot, display, brightness)
+        current_hour = localtime()[3]
+        if(current_hour < secrets.DISPLAY_OFF_START and current_hour >= secrets.DISPLAY_OFF_END):
+            # Read brightness from trim pot at A0 and set on display
+            brightness = set_matrix_brightness(pot, display, brightness)
+        else:
+            # If we're in night mode, turn off the display
+            display.brightness(0)
 
     # If we lose WiFi connection, reboot ESP8266
     if not wifi.isconnected():
-        symbols.draw(symbols.QUESTION_MARK, matrix=display, display=1, clear=True)
+        symbols.draw(symbols.WIFI, matrix=display, display=1, clear=True)
         sleep(3)
         print("WiFi disconnected, resetting.")
         led_2.on()
@@ -221,8 +225,17 @@ while True:
         # Turn on LED
         led_1.on()
 
-        print('Fetching weather ...')
-        weather = get_weather(GEO_LAT, GEO_LON, OW_API_KEY)
+        # Set time from NTP server
+        print('Setting time from NTP...')
+        try:
+            settime()
+        except OSError as error:
+            print('Failed to set time from NTP: ' + str(error))
+            pass
+        print('Now: {}'.format(localtime()))
+
+        print('Fetching weather for ' + secrets.GEO_NAME + '...')
+        weather = get_weather(secrets.GEO_LAT, secrets.GEO_LON, secrets.OW_API_KEY)
         print("Fetched weather successfully")
 
         # If the response was successful, update the LED matrices
