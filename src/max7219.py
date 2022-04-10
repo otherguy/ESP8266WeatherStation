@@ -36,6 +36,10 @@ _SHUTDOWN = const(12)
 _DISPLAYTEST = const(15)
 
 class Matrix8x8:
+
+    # Start with display turned on
+    display_on = True
+
     def __init__(self, spi, cs, num):
         """
         Driver for cascading MAX7219 8x8 LED matrices.
@@ -97,3 +101,15 @@ class Matrix8x8:
             for m in range(self.num):
                 self.spi.write(bytearray([_DIGIT0 + y, self.buffer[(y * self.num) + m]]))
             self.cs(1)
+
+    def on(self):
+        self.display_on = True
+        self.show()
+
+    def off(self):
+        self.display_on = False
+        self.fill(0)
+        self.show()
+
+    def is_off(self):
+        return not self.display_on

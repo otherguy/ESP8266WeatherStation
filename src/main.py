@@ -20,17 +20,17 @@ import gc
 #
 
 # How often to check for weather updates (milliseconds)
-QUERY_DELAY   = 3600000 # 1 hour
-BLINK_DELAY   =    3000 # 3 seconds
+QUERY_DELAY   = 900000 # 15 minutes
+BLINK_DELAY   =   2000 # 2 seconds
 
 # Definitions
-NUM_MATRICES    = 3  # How many 8x8 matrices are connected
-CS_PIN          = 15 # GPIO 15 = D8 = CS
-LED_0_PIN       = 2  # GPIO  2 = internal LED of the NodeMCU
-LED_1_PIN       = 5  # GPIO  5 = D1
-LED_2_PIN       = 4  # GPIO  4 = D2
-INSERTION_PIN   = 0  # GPIO  0 = D3
-SPI_BAUDRATE    = 10000000 # 10Mhz baudrate (default is 80Mhz)
+NUM_MATRICES  = 3  # How many 8x8 matrices are connected
+CS_PIN        = 15 # GPIO 15 = D8 = CS
+LED_0_PIN     = 2  # GPIO  2 = internal LED of the NodeMCU
+LED_1_PIN     = 5  # GPIO  5 = D1
+LED_2_PIN     = 4  # GPIO  4 = D2
+INSERTION_PIN = 0  # GPIO  0 = D3
+SPI_BAUDRATE  = 10000000 # 10Mhz baudrate (default is 80Mhz)
 
 # #############################################################################
 # #############################################################################
@@ -198,17 +198,23 @@ print('Now: {}'.format(localtime()))
 
 # Main loop
 while True:
+
     # If power jack is removed, lower brightness
     if not insertion:
-        display.brightness(1)
+        display.brightness(0)
     else:
         current_hour = localtime()[3]
-        if(current_hour < secrets.DISPLAY_OFF_START and current_hour >= secrets.DISPLAY_OFF_END):
-            # Read brightness from trim pot at A0 and set on display
-            brightness = set_matrix_brightness(pot, display, brightness)
+        if(current_hour <= secrets.DISPLAY_OFF_START and current_hour >= secrets.DISPLAY_OFF_END):
+            # If the display was off, turn it on and reset update_time to trigger a refresh
+            if display.is_off():
+                display.on()
+                update_time = ticks_ms() + QUERY_DELAY
         else:
             # If we're in night mode, turn off the display
-            display.brightness(0)
+            display.off()
+
+            # Read brightness from trim pot at A0 and set on display
+            brightness = set_matrix_brightness(pot, display, brightness)
 
     # If we lose WiFi connection, reboot ESP8266
     if not wifi.isconnected():
@@ -244,13 +250,14 @@ while True:
             # Clear display
             display.fill(0)
 
-            # Loop: 0, 1, 2
-            for day in range(0, NUM_MATRICES):
-                condition = weather[day]['weather'][0]['main']
-                symbol_name = conditions_map.get(condition, symbols.QUESTION_MARK)
-                print("Day " + str(day) + ": " + condition + ' (' + symbol_name + ')')
-                symbol_data = getattr(symbols, symbol_name)
-                symbols.draw(symbol_data, matrix=display, display=day)
+            if not display.is_off():
+                # Loop: 0, 1, 2
+                for day in range(0, NUM_MATRICES):
+                    condition = weather[day]['weather'][0]['main']
+                    symbol_name = conditions_map.get(condition, symbols.QUESTION_MARK)
+                    print("Day " + str(day) + ": " + condition + ' (' + symbol_name + ')')
+                    symbol_data = getattr(symbols, symbol_name)
+                    symbols.draw(symbol_data, matrix=display, display=day)
 
             # Display symbols
             display.show()

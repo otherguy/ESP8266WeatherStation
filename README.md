@@ -94,7 +94,8 @@ to `0` if you never want to turn off the display.
 
 ### Upload Software
 
-Use [Adafruit's `ampy` tool](https://github.com/adafruit/ampy) to upload the software to the NodeMCU.
+Use [Adafruit's `ampy` tool](https://github.com/adafruit/ampy) to upload the software to the NodeMCU. Adjust the
+port according to your operating system and USB controller.
 
 ```bash
 $ ampy --port /dev/tty.usbserial-1430 --baud 115200 put src/boot.py
@@ -117,7 +118,7 @@ potentiometer value is ignored.
 
 `LED 1` is used to indicate network activity, while connecting to WiFi or fetching weather data.
 
-`LED 2` is used for debugging purposes. It blinks every 3 seconds (or whatever you set in `BLINK_DELAY`). If it
+`LED 2` is used for debugging purposes. It blinks every 2 seconds (or whatever you set in `BLINK_DELAY`). If it
 does not blink, it means that the display is not updating and the NodeMCU has locked up.
 
 ### Weather Icons
