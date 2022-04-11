@@ -20,8 +20,8 @@ import gc
 #
 
 # How often to check for weather updates (milliseconds)
-QUERY_DELAY   = 900000 # 15 minutes
-BLINK_DELAY   =   2000 # 2 seconds
+QUERY_DELAY   = 1800000 # 30 minutes
+BLINK_DELAY   =    1500 # 1.5 seconds
 
 # Definitions
 NUM_MATRICES  = 3  # How many 8x8 matrices are connected
@@ -99,18 +99,23 @@ def get_weather(lat, lon, api_key):
         '&units=metric' + \
         '&lang=en'
 
-    response = requests.get(request_url)
+    try:
+        response = requests.get(request_url)
 
-    # If the response was not successful, return
-    if response.status_code != 200:
-        print("Weather API error " + str(response.status_code))
+        # If the response was not successful, return
+        if response.status_code != 200:
+            print("Weather API error " + str(response.status_code))
+            return None
+
+        # Get daily forecast part
+        json_data = response.json()['daily']
+
+        # Return just the daily forecasts for the next 3 days (memory reasons)
+        return [ json_data[0], json_data[1], json_data[2] ]
+    except Exception as err:
+        print ("Requests Exception: ", err)
         return None
 
-    # Get daily forecast part
-    json_data = response.json()['daily']
-
-    # Return just the daily forecasts for the next 3 days (memory reasons)
-    return [ json_data[0], json_data[1], json_data[2] ]
 
 
 # Map from OpenWeatherMap 'Main' conditions to 8x8 icons

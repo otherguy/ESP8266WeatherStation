@@ -99,9 +99,9 @@ port according to your operating system and USB controller.
 
 ```bash
 $ ampy --port /dev/tty.usbserial-1430 --baud 115200 put src/boot.py
-$ ampy --port /dev/tty.usbserial-1430 --baud 115200 put src/secrets.py
-$ ampy --port /dev/tty.usbserial-1430 --baud 115200 put src/symbols.py
 $ ampy --port /dev/tty.usbserial-1430 --baud 115200 put src/max7219.py
+$ ampy --port /dev/tty.usbserial-1430 --baud 115200 put src/symbols.py
+$ ampy --port /dev/tty.usbserial-1430 --baud 115200 put src/secrets.py
 $ ampy --port /dev/tty.usbserial-1430 --baud 115200 put src/main.py
 ```
 
