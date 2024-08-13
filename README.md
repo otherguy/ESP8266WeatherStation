@@ -65,16 +65,38 @@ $ pip3 install --user adafruit-ampy
 
 ### Install MicroPython
 
-Download the latest [MicroPython firmware for ESP8266](https://micropython.org/download/esp8266/). I used
-[`esp8266-20220117-v1.18.bin`](firmware/esp8266-20220117-v1.18.bin) and flash it to the NodeMCU.
+Download the latest [MicroPython firmware for ESP8266](https://micropython.org/download/esp8266/) and flash it to the NodeMCU.
+
+_Note:_ Since July 2024, when using the OpenWeatherMap API, you need to use a custom build of MicroPython with a larger TLS buffer. See the section below for more details.
 
 _Note:_ The USB serial device (`/dev/tty.usbserial-1430`) will be different, depending on your operating
 system, USB controller and port you use.
 
+
 ```bash
 $ esptool.py --port /dev/tty.usbserial-1430 erase_flash
-$ esptool.py --port /dev/tty.usbserial-1430 --baud 460800 write_flash --flash_size=detect -fm dio 0x00 firmware/esp8266-20220117-v1.18.bin
+$ esptool.py --port /dev/tty.usbserial-1430 --baud 460800 write_flash --flash_size=detect -fm dio 0x00 firmware/ESP8266_GENERIC-20240602-v1.23.0.bin
 ```
+
+### Workaround for TLS buffer overflow in axtls
+
+OpenWeatherMap switched to a new SSL certificate in July 2024 which is too large for the default buffer size in the ESP8266's MicroPython TLS implementation with axTLS. This causes the ESP8266 to crash when trying to fetch weather data. To address this, the buffer size needs to be increased by recompiling the firmware with appropriate settings. More details can be found in [this GitHub issue](https://github.com/micropython/micropython/issues/3279).
+
+I have provided a precompiled firmware image with the necessary changes in the [firmware](firmware) folder. The firmware is based on MicroPython `1.23.0` and has a larger TLS buffer size of 8192 bytes. Simply use the [`ESP8266_GENERIC-20240602-v1.23.0-tls-buffer-8192.bin`](firmware/ESP8266_GENERIC-20240602-v1.23.0-tls-buffer-8192.bin) file instead of [`ESP8266_GENERIC-20240602-v1.23.0.bin`](firmware/ESP8266_GENERIC-20240602-v1.23.0.bin).
+
+You can also compile the firmware for ESP8266 yourself with the following steps:
+
+```bash
+gh repo clone micropython/micropython
+cd micropython
+git checkout v1.23.0
+make -C ports/esp8266 submodules
+docker run --rm -v $HOME:$HOME -u $UID -w $PWD -e GIT_DISABLE_UNTRACKED_CACHE=1 larsks/esp-open-sdk make -j8 -C mpy-cross
+cd ports/esp8266
+docker run --rm -v $HOME:$HOME -u $UID -w $PWD -e GIT_DISABLE_UNTRACKED_CACHE=1 larsks/esp-open-sdk make -j8 AXTLS_DEFS_EXTRA="-Dabort=abort_ -DRT_MAX_PLAIN_LENGTH=1024 -DRT_EXTRA=8192" BOARD="ESP8266_GENERIC"
+```
+
+The firmware can then be found at `build-ESP8266_GENERIC/firmware.bin`.
 
 ### Configure Settings
 
