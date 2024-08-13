@@ -91,7 +91,7 @@ def get_weather(lat, lon, api_key):
 
     :see: https://openweathermap.org/api/one-call-api#example
     """
-    request_url = 'https://api.openweathermap.org/data/2.5/onecall' + \
+    request_url = 'https://api.openweathermap.org/data/3.0/onecall' + \
         '?lat=' + str(lat) + \
         '&lon=' + str(lon) + \
         '&appid=' + str(api_key) + \
@@ -104,7 +104,7 @@ def get_weather(lat, lon, api_key):
 
         # If the response was not successful, return
         if response.status_code != 200:
-            print("Weather API error " + str(response.status_code))
+            print("Weather API error:", str(response.status_code))
             return None
 
         # Get daily forecast part
@@ -113,8 +113,8 @@ def get_weather(lat, lon, api_key):
         # Return just the daily forecasts for the next 3 days (memory reasons)
         return [ json_data[0], json_data[1], json_data[2] ]
     except Exception as err:
-        print ("Requests Exception: ", err)
-        return None
+        print ("Exception in request:", err.__class__.__name__, err)
+        raise err
 
 
 
@@ -247,8 +247,13 @@ while True:
         print('Now: {}'.format(localtime()))
 
         print('Fetching weather for ' + secrets.GEO_NAME + '...')
-        weather = get_weather(secrets.GEO_LAT, secrets.GEO_LON, secrets.OW_API_KEY)
-        print("Fetched weather successfully")
+        try:
+            weather = get_weather(secrets.GEO_LAT, secrets.GEO_LON, secrets.OW_API_KEY)
+            print("Fetched weather successfully")
+        except Exception as err:
+            weather = None
+            display.fill(0)
+            display.show()
 
         # If the response was successful, update the LED matrices
         if weather != None:
