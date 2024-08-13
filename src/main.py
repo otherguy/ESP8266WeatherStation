@@ -252,7 +252,16 @@ while True:
             print("Fetched weather successfully")
         except Exception as err:
             weather = None
+
+            # Clear display
             display.fill(0)
+
+            if not display.is_off():
+                # Loop: 0, 1, 2
+                for day in range(0, NUM_MATRICES):
+                    symbols.draw(symbols.EXCLAMATION_MARK, matrix=display, display=day)
+
+            # Display symbols
             display.show()
 
         # If the response was successful, update the LED matrices
