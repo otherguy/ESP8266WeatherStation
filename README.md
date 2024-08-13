@@ -1,5 +1,5 @@
 
-# 🌤 NodeMCU Weather Station
+# 🌤 ESP8266 Weather Station
 
 ## Hardware
 
@@ -9,7 +9,7 @@ The following components are required (all through hole):
 
 | Qty. | Item                       | Value          | Label      | Footprint | Price    |
 |----------|------------------------|----------------|------------|-----------|----------|
-| 1    | ESP8266 NodeMCU board      | -              |            | -         | US$ 2.05 |
+| 1    | ESP8266 NodeMCU v3 board (4MB flash)     | -              |            | -         | US$ 2.05 |
 | 3    | MAX7219 8×8 SPI LED matrix | -              |            | -         | US$ 3.14 |
 | 1    | DC Female Power Socket     | 5.5 × 2.1mm    | `J1`       | PTH       | US$ 0.07 |
 | 1    | Trimmer potentiometer      | 3mm, 1kΩ       | `R1`       | DIP-3 PTH | US$ 0.04 |
@@ -29,7 +29,7 @@ voltage set at `3.3V` instead of `1.0V`, meaning no voltage divider circuit is n
 
 ### Circuit Board
 
-The circuit board is very simple and just holds the NodeMCU and the 3 LED matrices as
+The circuit board is very simple and just holds the ESP8266 and the 3 LED matrices as
 well as the power jack and a trimpot to adjust the LED brightness.
 
 I had 10 boards (1.6mm FR4 ENIG, RoHS, black solder mask) manufactured by [JLPCB](https://jlcpcb.com) for
@@ -66,6 +66,7 @@ $ pip3 install --user adafruit-ampy
 ### Install MicroPython
 
 Download the latest [MicroPython firmware for ESP8266](https://micropython.org/download/esp8266/) and flash it to the NodeMCU.
+[`esp8266-20220117-v1.18.bin`](firmware/esp8266-20220117-v1.18.bin) and flash it to the ESP8266.
 
 _Note:_ Since July 2024, when using the OpenWeatherMap API, you need to use a custom build of MicroPython with a larger TLS buffer. See the section below for more details.
 
@@ -116,7 +117,7 @@ to `0` if you never want to turn off the display.
 
 ### Upload Software
 
-Use [Adafruit's `ampy` tool](https://github.com/adafruit/ampy) to upload the software to the NodeMCU. Adjust the
+Use [Adafruit's `ampy` tool](https://github.com/adafruit/ampy) to upload the software to the ESP8266. Adjust the
 port according to your operating system and USB controller.
 
 ```bash
@@ -141,7 +142,7 @@ potentiometer value is ignored.
 `LED 1` is used to indicate network activity, while connecting to WiFi or fetching weather data.
 
 `LED 2` is used for debugging purposes. It blinks every 2 seconds (or whatever you set in `BLINK_DELAY`). If it
-does not blink, it means that the display is not updating and the NodeMCU has locked up.
+does not blink, it means that the display is not updating and the ESP8266 has locked up.
 
 ### Weather Icons
 

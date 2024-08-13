@@ -26,7 +26,7 @@ BLINK_DELAY   =    1500 # 1.5 seconds
 # Definitions
 NUM_MATRICES  = 3  # How many 8x8 matrices are connected
 CS_PIN        = 15 # GPIO 15 = D8 = CS
-LED_0_PIN     = 2  # GPIO  2 = internal LED of the NodeMCU
+LED_0_PIN     = 2  # GPIO  2 = internal LED of the ESP8266
 LED_1_PIN     = 5  # GPIO  5 = D1
 LED_2_PIN     = 4  # GPIO  4 = D2
 INSERTION_PIN = 0  # GPIO  0 = D3
