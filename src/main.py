@@ -25,6 +25,9 @@ QUERY_DELAY   = 1800000 # 30 minutes
 # How often to blink the LED (milliseconds)
 BLINK_DELAY   =   30000 # 30 seconds
 
+# How many failed attempts to fetch weather before displaying an error
+FAILURE_THRESHOLD = 5
+
 # Definitions
 NUM_MATRICES  = 3  # How many 8x8 matrices are connected
 CS_PIN        = 15 # GPIO 15 = D8 = CS
@@ -206,6 +209,9 @@ print('Now: {}'.format(localtime()))
 # Main loop
 while True:
 
+    # Prepare a failure counter
+    failure_count = 0
+
     # If power jack is removed, lower brightness
     if insertion.value() == 0:
         display.brightness(0)
@@ -252,8 +258,18 @@ while True:
         try:
             weather = get_weather(secrets.GEO_LAT, secrets.GEO_LON, secrets.OW_API_KEY)
             print("Fetched weather successfully")
+
+            # Clear failure counter
+            failure_count = 0
+
         except Exception as err:
+            print("Failed to fetch weather!")
+            failure_count += 1
             weather = None
+
+        # If the response failed FAILURE_THRESHOLD times, display ! ! !
+        if weather == None and failure_count >= FAILURE_THRESHOLD:
+            print("Failed to fetch weather " + str(FAILURE_THRESHOLD) + " times!")
 
             # Clear display
             display.fill(0)
