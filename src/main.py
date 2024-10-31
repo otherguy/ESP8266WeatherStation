@@ -21,7 +21,9 @@ import gc
 
 # How often to check for weather updates (milliseconds)
 QUERY_DELAY   = 1800000 # 30 minutes
-BLINK_DELAY   =    1500 # 1.5 seconds
+
+# How often to blink the LED (milliseconds)
+BLINK_DELAY   =   30000 # 30 seconds
 
 # Definitions
 NUM_MATRICES  = 3  # How many 8x8 matrices are connected
@@ -298,7 +300,7 @@ while True:
         # Reset update time
         update_time = ticks_ms()
 
-    # Blink LED 2 led
+    # Blink LED 2 led if BLINK_DELAY ms have passed since last blink
     if ticks_ms() - blink_time >= BLINK_DELAY:
         led_2.on()
         sleep(0.05)
